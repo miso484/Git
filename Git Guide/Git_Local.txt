@@ -1,0 +1,112 @@
+#
+# INTRODUCTION - A nicely paced introduction to the majority of git commands
+#
+
+# Commit changes
+git commit
+
+# Create a new branch
+git branch bugFix
+
+# Checkout to bugFix branch
+git checkout bugFix
+
+# Create bugFixTwo and checkout to it
+git checkout master; git checkout -b bugFixTwo
+
+# Merge master into bugFix branch - include all the work from one to other branch
+git checkout bugFix; git merge master
+
+# Rebase to move our work from bugFix directly onto the work from master. That way it would look like these two features were developed sequentially, when in reality they were developed in parallel.
+git checkout bugFix; git rebase master
+git checkout master; git rebase bugFix
+
+
+#
+# MOVING AROUND 
+#
+
+
+# DETACH HEAD - HEAD always points to the most recent commit, it can be detached to other commit
+
+# Detach HEAD from bugFix and attach it to the commit instead
+git checkout bugFix; git checkout commitName
+
+
+# RELATIVE REFS - specify commits by their hash isn't the most convenient thing ever, which is why Git has relative refs
+
+# Checkout to the first parent of the master
+git checkout master^
+
+# Reference HEAD to it's grandparent
+git checkout HEAD^^
+
+# Reference HEAD to it's second parrent (when two branches are merged)
+git checkout HEAD^2
+
+# THE "~" OPERATOR - move a lot of levels up in the commit tree
+
+# Reference HEAD 4 commits up
+git checkout HEAD~4
+
+# Reference HEAD to second parent and 3 commits up
+git checkout HEAD^2~3
+
+# Reassign a branch to a commit that is three parents behind HEAD
+git branch -f master HEAD~3
+
+# Create a new branch named bugFixThree on the second parent and 3 commits up of the current location
+git branch -f bugFixThree HEAD^2~3
+
+# REVERSING CHANGES
+# Git Reset - reverts changes by moving a branch reference backwards in time to an older commit - do it on local branches
+git reset HEAD^
+# Git Revert - reverse changes and share those reversed changes with others - do it on remote branches when you want to share changes
+git revert HEAD
+
+
+#
+# MOVING WORK AROUND - Get comfortable with modifying the source tree
+#
+
+
+# CHERRY PICK - copy a series of commits below your current location (HEAD)
+
+# Copy comits C2 and C4 to master branch
+git checkout master
+git cherry-pick C2 C4
+
+
+# INTERACTIVE REBASE - This is usefull when you dont know which series of commits to copy below your current location (HEAD). Iteractive rebase uses UI for help
+
+# Provide interactive rebase UI with the last 4 commits. The UI lets you reorder, omit, and squash selected commits
+git rebase -i HEAD~4
+
+
+#
+# A MIXED BAG - Git techniques, tricks, and tips
+#
+
+
+# GRABBING JUST ONE COMMIT
+
+# Copy only commit C3 below master branch
+git checkout master
+git cherry-pick C3
+
+# Copy only commit C3 below master branch
+git rebase -i HEAD~3            #Reorder and ommit commits in the UI
+git checkout C3                 #Point HEAD to C3
+git branch -f master HEAD       #Move master branch below commit C3
+
+
+# GIT TAGS - permanently mark certain commits as "milestones" that you can then reference like a branch
+
+# Make a tag at commit C1 which is our version 1 prototype
+git tag V1 C1
+
+
+# GIT DESCRIBE - describe where you are relative to the closest "anchor" (aka tag) in the form <tag>_<numCommits>_g<hash>
+
+# Get nearest tag, number of commits between nearest tag and the master branch and hash
+git describe master
